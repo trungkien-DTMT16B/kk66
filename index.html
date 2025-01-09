@@ -88,7 +88,7 @@
         // Era Widget initialization
         const eraWidget = new EraWidget();
         let config = null;
-        let dobuiValue = 0; // Khởi tạo giá trị nhịp tim mặc định
+        let amdatValue = 0; // Khởi tạo giá trị nhịp tim mặc định
         const dataBuffer = [];
 
         eraWidget.onConfiguration((configuration) => {
@@ -96,8 +96,8 @@
         });
 
         eraWidget.onValues((values) => {
-            const input = document.getElementById('buibui');
-            dobuiValue = values[config.id].value; // Giả sử values[config.id].value là nhịp tim thực tế
+            const input = document.getElementById('amdat');
+            amdatValue = values[config.id].value; // Giả sử values[config.id].value là nhịp tim thực tế
             input.checked = values[config.id].value > 0; // Đặt trạng thái của checkbox dựa trên nhịp tim
         });
 
@@ -115,7 +115,7 @@
             },
 
             title: {
-                text: 'Độ Bụi '
+                text: 'Độ Ẩm Đất '
             },
 
             pane: {
@@ -128,7 +128,7 @@
 
             yAxis: {
                 min: 0,
-                max: 3,
+                max: 100,
                 tickPixelInterval: 72,
                 tickPosition: 'inside',
                 tickColor: Highcharts.defaultOptions.chart.backgroundColor || '#FFFFFF',
@@ -144,20 +144,20 @@
                 lineWidth: 0,
                 plotBands: [
                     {
-                        from: 0,
-                        to: 1,
+                        from: 60,
+                        to: 100,
                         color: '#55BF3B', // Green
                         thickness: 20
                     },
                     {
-                        from: 1,
-                        to: 2,
+                        from: 40,
+                        to: 60,
                         color: '#DDDF0D', // Yellow
                         thickness: 20
                     },
                     {
-                        from: 2,
-                        to: 3,
+                        from: 0,
+                        to: 40,
                         color: '#DF5353', // Red
                         thickness: 20
                     }
@@ -166,13 +166,13 @@
 
             series: [
                 {
-                    name: 'Độ bụi:',
+                    name: 'Độ Ẩm Đất:',
                     data: [0], // Initial value
                     tooltip: {
-                        valueSuffix: ' mg/m3'
+                        valueSuffix: ' %'
                     },
                     dataLabels: {
-                        format: '{y} mg/m3',
+                        format: '{y} %',
                         borderWidth: 0,
                         style: {
                             fontSize: '16px'
@@ -196,7 +196,7 @@
         // Update data every second
         setInterval(() => {
             const x = new Date().getTime(); // Current timestamp
-            const y = dobuiValue; // Actual heartbeat value
+            const y = amdatValue; // Actual heartbeat value
 
             if (chart) {
                 const point = chart.series[0].points[0];
@@ -217,12 +217,12 @@
         document.getElementById('exportButton').addEventListener('click', () => {
             const ws = XLSX.utils.json_to_sheet(dataBuffer.map(point => ({
                 Time: new Date(point[0]).toLocaleString(),
-                Bui: point[1]
+                Do_Am_Dat: point[1]
             })));
 
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'buibui');
-            XLSX.writeFile(wb, 'DoBui.xlsx');
+            XLSX.utils.book_append_sheet(wb, ws, 'amdat');
+            XLSX.writeFile(wb, 'DoAmDat.xlsx');
         });
     </script>
 </body>
